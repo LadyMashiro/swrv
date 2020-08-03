@@ -1,3 +1,5 @@
+import hash from './hash'
+import { keyInterface } from '../types'
 interface ICacheItem {
   data: any,
   createdAt: number,
@@ -40,5 +42,30 @@ export default class SWRVCache {
 
   delete (k: string) {
     this.items.delete(k)
+  }
+
+  serializeKey (key: keyInterface): [string, any, string] {
+    let args = null
+    if (typeof key === 'function') {
+      try {
+        key = key()
+      } catch (err) {
+        // dependencies not ready
+        key = ''
+      }
+    }
+
+    if (Array.isArray(key)) {
+      // args array
+      args = key
+      key = hash(key)
+    } else {
+      // convert null to ''
+      key = String(key || '')
+    }
+
+    const errorKey = key ? 'err@' + key : ''
+
+    return [key, args, errorKey]
   }
 }
