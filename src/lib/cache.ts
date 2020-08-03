@@ -23,9 +23,10 @@ export default class SWRVCache {
     return this.items.get(_key)
   }
 
-  set (k: string, v: any, ttl: number) {
+  set (k: keyInterface, v: any, ttl: number) {
     const timeToLive = ttl || this.ttl
     const now = Date.now()
+    const [_key] = this.serializeKey(k)
     const item = {
       data: v,
       createdAt: now,
@@ -35,10 +36,10 @@ export default class SWRVCache {
     timeToLive && setTimeout(() => {
       const current = Date.now()
       const hasExpired = current >= item.expiresAt
-      if (hasExpired) this.delete(k)
+      if (hasExpired) this.delete(_key)
     }, timeToLive)
 
-    this.items.set(k, item)
+    this.items.set(_key, item)
   }
 
   delete (k: string) {
