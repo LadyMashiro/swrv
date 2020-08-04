@@ -3,6 +3,7 @@ import VueCompositionApi, { watch, defineComponent, ref } from '@vue/composition
 import useSWRV, { mutate } from '@/use-swrv'
 import { advanceBy, advanceTo, clear } from 'jest-date-mock'
 
+
 Vue.use(VueCompositionApi)
 
 jest.useFakeTimers()
@@ -105,6 +106,33 @@ describe('useSWRV', () => {
      * with the cache key 'cache-key-7 123'
      */
     expect(vm.$el.textContent).toBe('hello, SWR 123')
+    done()
+  })
+
+  it('should accept object args', async done => {
+    const obj = { v: 'hello' }
+    const arr = ['world']
+
+    const vm = new Vue({
+      template: `<div>{{ v1 + ', ' + v2 + ', ' + v3 }}</div>`,
+      setup () {
+        // const { data: v1 } = useSWRV(['args-1', obj, arr], (a, b, c) => a + b.v + c[0])
+        const { data: v1 } = useSWRV(['args-1', obj, arr], () => `args-1${obj.v}${arr[0]}`)
+        // reuse the cache
+        // const { data: v2 } = useSWRV(['args-1', obj, arr], () => 'not called!')
+        const { data: v2 } = useSWRV(['args-1', obj, arr], () => 'not called!')
+
+        // different object
+        // const { data: v3 } = useSWRV(['args-2', obj, 'world'], (a, b, c) => a + b.v + c)
+        const { data: v3 } = useSWRV(['args-2', obj, 'world'], () => `args-2${obj.v}world`)
+
+        return {
+          v1, v2, v3
+        }
+      }
+    }).$mount()
+
+    expect(vm.$el.textContent).toBe('args-1helloworld, args-1helloworld, args-2helloworld')
     done()
   })
 
