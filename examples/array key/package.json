@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "serve": "npx @vue/cli serve"
+  },
+  "dependencies": {
+    "@vue/composition-api": "^0.5.4",
+    "swrv": "~0.5.2"
+  }
+}
