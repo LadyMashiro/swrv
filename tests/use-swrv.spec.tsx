@@ -109,6 +109,41 @@ describe('useSWRV', () => {
     done()
   })
 
+  /**
+   *it('should accept object args', async () => {
+    const obj = { v: 'hello' }
+    const arr = ['world']
+
+    function Page() {
+      const { data: v1 } = useSWR(
+        ['args-1', obj, arr],
+        (a, b, c) => a + b.v + c[0]
+      )
+
+      // reuse the cache
+      const { data: v2 } = useSWR(['args-1', obj, arr], () => 'not called!')
+
+      // different object
+      const { data: v3 } = useSWR(
+        ['args-2', obj, 'world'],
+        (a, b, c) => a + b.v + c
+      )
+
+      return (
+        <div>
+          {v1}, {v2}, {v3}
+        </div>
+      )
+    }
+
+    const { container } = render(<Page />)
+
+    await waitForDomChange({ container })
+    expect(container.textContent).toMatchInlineSnapshot(
+      `"args-1helloworld, args-1helloworld, args-2helloworld"`
+    )
+  })
+   */
   it('should accept object args', async done => {
     const obj = { v: 'hello' }
     const arr = ['world']
@@ -136,6 +171,26 @@ describe('useSWRV', () => {
     done()
   })
 
+  /**
+   * it('should accept function returning args', async () => {
+    const obj = { v: 'hello' }
+    const arr = ['world']
+
+    function Page() {
+      const { data } = useSWR(
+        () => ['args-3', obj, arr],
+        (a, b, c) => a + b.v + c[0]
+      )
+
+      return <div>{data}</div>
+    }
+
+    const { container } = render(<Page />)
+
+    await waitForDomChange({ container })
+    expect(container.textContent).toMatchInlineSnapshot(`"args-3helloworld"`)
+  })
+   */
   it('should accept function returning args', async done => {
     const obj = { v: 'hello' }
     const arr = ['world']
