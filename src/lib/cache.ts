@@ -20,7 +20,7 @@ export default class SWRVCache {
    */
   get (k: keyInterface): ICacheItem {
     const [_key] = this.serializeKey(k)
-    console.log('key serialization:', k, _key)
+    // console.log('key serialization:', k, _key)
     return this.items.get(_key)
   }
 
@@ -28,7 +28,7 @@ export default class SWRVCache {
     const timeToLive = ttl || this.ttl
     const now = Date.now()
     const [_key] = this.serializeKey(k)
-    console.log('key serialization:', k, _key)
+    // console.log('key serialization:', k, _key)
     const item = {
       data: v,
       createdAt: now,
