@@ -89,7 +89,7 @@ describe('useSWRV', () => {
     const vm = new Vue({
       template: `<div>hello, {{ data }}</div>`,
       setup () {
-        const { data, error } = useSWRV(['cache-key-7', id.value], () => `SWR ${id.value}`)
+        const { data, error } = useSWRV(['cache-key-7', id.value], key => `SWR ${key[1]}`)
 
         return {
           data, error
@@ -151,15 +151,12 @@ describe('useSWRV', () => {
     const vm = new Vue({
       template: `<div>{{ v1 + ', ' + v2 + ', ' + v3 }}</div>`,
       setup () {
-        // const { data: v1 } = useSWRV(['args-1', obj, arr], (a, b, c) => a + b.v + c[0])
-        const { data: v1 } = useSWRV(['args-1', obj, arr], () => `args-1${obj.v}${arr[0]}`)
+        const { data: v1 } = useSWRV(['args-1', obj, arr], key => key[0] + key[1].v + key[2])
         // reuse the cache
-        // const { data: v2 } = useSWRV(['args-1', obj, arr], () => 'not called!')
         const { data: v2 } = useSWRV(['args-1', obj, arr], () => 'not called!')
 
         // different object
-        // const { data: v3 } = useSWRV(['args-2', obj, 'world'], (a, b, c) => a + b.v + c)
-        const { data: v3 } = useSWRV(['args-2', obj, 'world'], () => `args-2${obj.v}world`)
+        const { data: v3 } = useSWRV(['args-2', obj, 'world'], key => key[0] + key[1].v + key[2])
 
         return {
           v1, v2, v3
@@ -198,7 +195,7 @@ describe('useSWRV', () => {
     const vm = new Vue({
       template: `<div>{{ data }}</div>`,
       setup () {
-        const { data } = useSWRV(['args-3', obj, arr], () => `args-3${obj.v}${arr[0]}`)
+        const { data } = useSWRV(['args-3', obj, arr], key => key[0] + key[1].v + key[2])
       
         return {
           data
