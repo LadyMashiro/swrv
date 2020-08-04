@@ -136,6 +136,25 @@ describe('useSWRV', () => {
     done()
   })
 
+  it('should accept function returning args', async done => {
+    const obj = { v: 'hello' }
+    const arr = ['world']
+
+    const vm = new Vue({
+      template: `<div>{{ data }}</div>`,
+      setup () {
+        const { data } = useSWRV(['args-3', obj, arr], () => `args-3${obj.v}${arr[0]}`)
+      
+        return {
+          data
+        }
+      }
+    }).$mount()
+
+    expect(vm.$el.textContent).toBe('args-3helloworld')
+    done()
+  })
+
   it('should allow async fetcher functions', async done => {
     const vm = new Vue({
       template: `<div>hello, {{ data }}</div>`,
