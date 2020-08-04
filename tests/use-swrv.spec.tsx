@@ -83,52 +83,30 @@ describe('useSWRV', () => {
     done()
   })
 
-  it('should allow arrays as key and update data if any element of the array changes', async done => {
-    let token = '123'
+  it('should allow arrays as key', async done => {
+    var id = ref('123')
     const vm = new Vue({
       template: `<div>hello, {{ data }}</div>`,
       setup () {
-        return useSWRV(['cache-key-2', token], (token) => `SWR ${token}`)
+        const { data, error } = useSWRV(['cache-key-7', id.value], () => `SWR ${id.value}`)
+
+        return {
+          data, error
+        }
       }
     }).$mount()
 
     expect(vm.$el.textContent).toBe('hello, SWR 123')
-    token = '456'
-    expect(vm.$el.textContent).toBe('hello, SWR 456')
+    id.value = '456'
+
+    /**
+     * when the id changes the swrv should still return the same data and not revalidate
+     * because the new id actually generates a new cache key which shouldn't affect our swrv request
+     * with the cache key 'cache-key-7 123'
+     */
+    expect(vm.$el.textContent).toBe('hello, SWR 123')
     done()
   })
-
-  /**
-   *   it('should allow arrays as key and update data if any element of the array changes', async done => {
-    const url = '/api/user'
-    let token = 123
-    const users = [{
-      id: 123,
-      name: 'Anna'
-    },
-    {
-      id: 456,
-      name: 'Tom'
-    }]
-    const fetchUser = (url: string, id: number): Promise<{ url: string, user: object }> => {
-      return new Promise(res => {
-        res({ url: `${url}/${id}`, user: users.find(user => user.id === id)})
-      })
-    }
-
-    const vm = new Vue({
-      template: `<div>hello, {{ data.user.name }}</div>`,
-      setup() {
-        return useSWRV(['cache-key-2', token], () => fetchUser(url, token))
-      }
-    }).$mount()
-
-    expect(vm.$el.textContent).toBe('hello, Anna')
-    token = 456
-    expect(vm.$el.textContent).toBe('hello, Tom')
-    done()
-  })
-   */
 
   it('should allow async fetcher functions', async done => {
     const vm = new Vue({

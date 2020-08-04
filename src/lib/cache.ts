@@ -42,8 +42,9 @@ export default class SWRVCache {
     this.items.set(_key, item)
   }
 
-  delete (k: string) {
-    this.items.delete(k)
+  delete (k: keyInterface) {
+    const [_key] = this.serializeKey(k)
+    this.items.delete(_key)
   }
 
   serializeKey (key: keyInterface): [string, any, string] {
